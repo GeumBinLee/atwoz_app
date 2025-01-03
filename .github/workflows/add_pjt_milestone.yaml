@@ -1,0 +1,33 @@
+name: Assign Project and Milestone
+
+on:
+  pull_request:
+    types: [opened]
+  issues:
+    types: [opened]
+
+jobs:
+  assign-project-and-milestone:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up GitHub CLI
+        run: |
+          sudo apt-get install -y jq
+          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+      - name: Assign Project
+        run: |
+          PROJECT_ID=$(gh project list --repo ${{ github.repository }} --json id --jq '.[] | select(.title == "Heart Beat Flutter Project") | .id')
+          if [ -n "$PROJECT_ID" ]; then
+            gh project item add $PROJECT_ID --item-type=issue --item-id=${{ github.event.issue.number }}
+          fi
+      - name: Assign Milestone
+        run: |
+          MILESTONE_ID=$(gh issue list --repo ${{ github.repository }} --json id --jq '.[] | select(.title == "MVP") | .id')
+          if [ -n "$MILESTONE_ID" ]; then
+            gh issue edit ${{ github.event.issue.number }} --milestone "$MILESTONE_ID"
+          fi
+      - name: Trigger Next Workflow
+        run: |
+          gh workflow run "Flutter_Test" --ref "${{ github.ref_name }}"

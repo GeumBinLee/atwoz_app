@@ -1,17 +1,11 @@
-# Flutter Test for Lighty
-# 작동 내용: flutter test 빌드를 통한 코드 검증 수행
 name: Flutter_Test
 
-# 이벤트 정의
 on:
-  # prod, dev, main 브랜치로 Pull Request 발생 시 동작
-  pull_request:
-    branches:
-      - prod
-      - dev
-      - main
+  workflow_run:
+    workflows: ["Assign Project and Milestone"]
+    types:
+      - completed
 
-# Job 영역
 jobs:
   build:
     name: Running Test and CI

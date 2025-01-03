@@ -97,6 +97,8 @@ class _AnswerDialogueState extends State<AnswerDialogue> {
         });
       },
       elevatedButtonText: '확인',
+      elevatedButtonTextColor: context.appColors.onSurface,
+      elevatedButtonColor: AppColors.colorGrey200,
       onElevatedButtonPressed: () {
         if (widget.initialValue != null) {
           widget.answerController.text = widget.initialValue!;
